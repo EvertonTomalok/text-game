@@ -12,5 +12,4 @@ func StartGame(flow *config.Flow) {
 		fmt.Println("It was not possible determine the round numbers.")
 		return
 	}
-
 }

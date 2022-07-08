@@ -9,7 +9,7 @@ import (
 func runCmd(name string, arg ...string) {
 	command := exec.Command(name, arg...)
 	command.Stdout = os.Stdout
-	command.Run()
+	_ = command.Run()
 }
 
 func ClearTerminal() {
