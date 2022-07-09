@@ -23,10 +23,14 @@ func TestGame_OK(t *testing.T) {
 	flow := config.Flow{
 		Rounds: 15,
 	}
-	FlowControllerAdapter = new(cliMocker.FlowValidatorMockError)
+	FlowControllerAdapter = new(cliMocker.FlowValidatorMock)
 
 	mockGetInput := new(mocks.InputInterface)
-	mockGetInput.On("GetValidInput").Return(1)
+	mockGetInput.On("GetValidInput").Return(uint(1))
 	GetInputUserAdapter = mockGetInput
-	_ = StartGame(&flow)
+	err := StartGame(&flow)
+
+	if err != nil {
+		t.Fail()
+	}
 }

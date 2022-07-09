@@ -1,6 +1,7 @@
 package cli
 
 import (
+	"bytes"
 	"fmt"
 
 	"github.com/evertotomalok/text-game/internal/app/config"
@@ -18,6 +19,9 @@ var GetInputUserAdapter ports.InputInterface
 var FlowControllerAdapter ports.FlowInterface
 
 func StartGame(flow *config.Flow) error {
+	// Refactor and implements a CoR  design pattern where each node will be a step
+	// https://refactoring.guru/design-patterns/chain-of-responsibility
+
 	if err := FlowControllerAdapter.FlowValidator(flow); err != nil {
 		log.Error("It was not possible to determine the number of rounds.")
 		return &errs.InvalidRoundsNumber{}
@@ -30,6 +34,7 @@ func StartGame(flow *config.Flow) error {
 	}
 
 	questionsHandler(flow, questions)
+	getFlowResult(flow)
 
 	return nil
 }
@@ -96,4 +101,19 @@ func computeDebugComplexity(flow *config.Flow, complexity int) {
 	} else {
 		helpers.DecrementOneToComplexity(flow, complexity*-1)
 	}
+}
+
+func getFlowResult(flow *config.Flow) {
+	var buffer bytes.Buffer
+	for i := 0; i < 150; i++ {
+		buffer.WriteString("-")
+	}
+
+	fmt.Println(buffer.String())
+	if flow.DebugComplexity > 0 {
+		fmt.Printf("Your turn is over. You're fired because you couldn't handle with the problems. [Complexity: %d]\n", flow.DebugComplexity)
+	} else {
+		fmt.Printf("You're a super hero! Thank you for saving the day!!!!!! [Complexity: %d]\n", flow.DebugComplexity)
+	}
+	fmt.Println(buffer.String())
 }
