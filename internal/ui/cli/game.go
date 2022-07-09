@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/evertotomalok/text-game/internal/app/config"
+	"github.com/evertotomalok/text-game/internal/ui/cli/builder"
 	"github.com/evertotomalok/text-game/pkg/helpers"
 )
 
@@ -12,4 +13,7 @@ func StartGame(flow *config.Flow) {
 		fmt.Println("It was not possible determine the round numbers.")
 		return
 	}
+	questions, _ := builder.CreateQuestions(flow.Rounds)
+	fmt.Printf("%+v\n", questions)
+	fmt.Println(len(questions))
 }
