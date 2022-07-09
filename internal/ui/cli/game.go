@@ -6,13 +6,13 @@ import (
 	"github.com/evertotomalok/text-game/internal/app/config"
 	"github.com/evertotomalok/text-game/internal/core/ports"
 	"github.com/evertotomalok/text-game/internal/ui/cli/builder"
-	"github.com/evertotomalok/text-game/pkg/helpers"
 )
 
-var GetInputUser ports.InputInterface
+var GetInputUserAdapter ports.InputInterface
+var FlowControllerAdapter ports.FlowInterface
 
 func StartGame(flow *config.Flow) {
-	if err := helpers.FlowValidator(flow); err != nil {
+	if err := FlowControllerAdapter.FlowValidator(flow); err != nil {
 		fmt.Println("It was not possible to determine the number of rounds.")
 		return
 	}
@@ -22,5 +22,5 @@ func StartGame(flow *config.Flow) {
 	}
 	fmt.Println(len(questions))
 
-	_ = GetInputUser.GetValidInput()
+	_ = GetInputUserAdapter.GetValidInput()
 }

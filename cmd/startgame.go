@@ -17,8 +17,8 @@ func Execute() {
 		DebugComplexity: 0,
 	}
 
-	inputUserAdapter := new(adapters.UserInputAdapter)
-	cli.GetInputUser = inputUserAdapter
+	cli.GetInputUserAdapter = new(adapters.UserInputAdapter)
+	cli.FlowControllerAdapter = new(adapters.FlowController)
 
 	cli.StartGame(&flow)
 }

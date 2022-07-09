@@ -3,6 +3,8 @@ package adapters
 import (
 	"fmt"
 
+	"github.com/evertotomalok/text-game/internal/app/config"
+	"github.com/evertotomalok/text-game/pkg/helpers"
 	"github.com/evertotomalok/text-game/pkg/utils"
 )
 
@@ -28,4 +30,11 @@ func (a *UserInputAdapter) GetValidInput() uint {
 
 		return option
 	}
+}
+
+type FlowController struct {
+}
+
+func (a *FlowController) FlowValidator(flow *config.Flow) error {
+	return helpers.FlowValidator(flow)
 }
