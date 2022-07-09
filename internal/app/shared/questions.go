@@ -4,7 +4,7 @@ import . "github.com/evertotomalok/text-game/internal/core/domain"
 
 var MainQuestions map[uint]Question = map[uint]Question{
 
-	1: {
+	0: {
 		ID:   1,
 		Text: "Opss... We have a trouble with our application, and all the system is down. What will you do?",
 		FirstAlternative: QuestionAlternative{
@@ -18,8 +18,8 @@ var MainQuestions map[uint]Question = map[uint]Question{
 			DebugComplexityCalculate: 1,
 		},
 	},
-	2: {
-		ID:   1,
+	1: {
+		ID:   2,
 		Text: "You're writing a new feature, but you found a bug. What will you do?",
 		FirstAlternative: QuestionAlternative{
 			Text:                     "Fix the bug.",
@@ -32,8 +32,8 @@ var MainQuestions map[uint]Question = map[uint]Question{
 			DebugComplexityCalculate: 1,
 		},
 	},
-	3: {
-		ID:   1,
+	2: {
+		ID:   3,
 		Text: "Ohhhh no! You noticed on slack that something it's wrong with a database's migration. What will you do?",
 		FirstAlternative: QuestionAlternative{
 			Text:                     "Change the migration.",
@@ -46,8 +46,8 @@ var MainQuestions map[uint]Question = map[uint]Question{
 			DebugComplexityCalculate: -1,
 		},
 	},
-	4: {
-		ID:   1,
+	3: {
+		ID:   4,
 		Text: "Your company's laptop doesn't work and you need to finish a task. What will you do?",
 		FirstAlternative: QuestionAlternative{
 			Text:                     "Get your personal laptop.",
@@ -60,7 +60,7 @@ var MainQuestions map[uint]Question = map[uint]Question{
 			DebugComplexityCalculate: -1,
 		},
 	},
-	5: {
+	4: {
 		ID:   5,
 		Text: "You are making a review in a pull request, and get some things that could be improved. What will you do?",
 		FirstAlternative: QuestionAlternative{
@@ -74,7 +74,7 @@ var MainQuestions map[uint]Question = map[uint]Question{
 			DebugComplexityCalculate: 1,
 		},
 	},
-	6: {
+	5: {
 		ID:   6,
 		Text: "You are making a planning meet with your team, and you remembered that you discovered a bug during the morning. What will you do?",
 		FirstAlternative: QuestionAlternative{
@@ -88,7 +88,7 @@ var MainQuestions map[uint]Question = map[uint]Question{
 			DebugComplexityCalculate: 1,
 		},
 	},
-	7: {
+	6: {
 		ID:   7,
 		Text: "You are making some queries in production database, and send a delete without where command. What will you do?",
 		FirstAlternative: QuestionAlternative{
@@ -102,7 +102,7 @@ var MainQuestions map[uint]Question = map[uint]Question{
 			DebugComplexityCalculate: 1,
 		},
 	},
-	8: {
+	7: {
 		ID:   8,
 		Text: "You are making some changes in a legacy code, and you need change a piece of code maintained for other team. What will you do?",
 		FirstAlternative: QuestionAlternative{
