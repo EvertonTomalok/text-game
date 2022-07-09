@@ -20,5 +20,5 @@ func Execute() {
 	cli.GetInputUserAdapter = new(adapters.UserInputAdapter)
 	cli.FlowControllerAdapter = new(adapters.FlowController)
 
-	cli.StartGame(&flow)
+	_ = cli.StartGame(&flow)
 }
