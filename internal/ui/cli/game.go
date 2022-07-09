@@ -33,7 +33,7 @@ func StartGame(flow *config.Flow) error {
 	}
 
 	questionsHandler(flow, questions)
-	getFlowResult(flow)
+	GetFlowResult(flow)
 
 	return nil
 }
@@ -45,10 +45,10 @@ func questionsHandler(flow *config.Flow, questions []domain.Question) {
 
 		switch questionChoice {
 		case 1:
-			computeDebugComplexity(flow, question.FirstAlternative.DebugComplexityCalculate)
+			ComputeDebugComplexity(flow, question.FirstAlternative.DebugComplexityCalculate)
 			complemetaryQuestion = shared.ComplementaryQuestions[uint(question.FirstAlternative.RedirectTo)]
 		case 2:
-			computeDebugComplexity(flow, question.SecondAlternative.DebugComplexityCalculate)
+			ComputeDebugComplexity(flow, question.SecondAlternative.DebugComplexityCalculate)
 			complemetaryQuestion = shared.ComplementaryQuestions[uint(question.SecondAlternative.RedirectTo)]
 		}
 
@@ -58,10 +58,10 @@ func questionsHandler(flow *config.Flow, questions []domain.Question) {
 
 		switch complementaryChoice {
 		case 1:
-			computeDebugComplexity(flow, complemetaryQuestion.FirstAlternative.DebugComplexityCalculate)
+			ComputeDebugComplexity(flow, complemetaryQuestion.FirstAlternative.DebugComplexityCalculate)
 			fmt.Println(complemetaryQuestion.FirstAlternative.TransitionMessage)
 		case 2:
-			computeDebugComplexity(flow, complemetaryQuestion.SecondAlternative.DebugComplexityCalculate)
+			ComputeDebugComplexity(flow, complemetaryQuestion.SecondAlternative.DebugComplexityCalculate)
 			fmt.Println(complemetaryQuestion.SecondAlternative.TransitionMessage)
 		}
 
@@ -94,7 +94,7 @@ func displayComplementaryQuestion(c domain.ComplementaryQuestion) uint {
 	return choice
 }
 
-func computeDebugComplexity(flow *config.Flow, complexity int) {
+func ComputeDebugComplexity(flow *config.Flow, complexity int) {
 	if complexity > 0 {
 		helpers.IncrementOneToComplexity(flow, complexity)
 	} else {
@@ -102,7 +102,7 @@ func computeDebugComplexity(flow *config.Flow, complexity int) {
 	}
 }
 
-func getFlowResult(flow *config.Flow) {
+func GetFlowResult(flow *config.Flow) {
 	separator := utils.Separator("-", 150)
 
 	fmt.Println(separator)

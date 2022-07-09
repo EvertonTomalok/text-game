@@ -23,14 +23,38 @@ func TestGame_OK(t *testing.T) {
 	flow := config.Flow{
 		Rounds: 15,
 	}
+
 	FlowControllerAdapter = new(cliMocker.FlowValidatorMock)
 
 	mockGetInput := new(mocks.InputInterface)
 	mockGetInput.On("GetValidInput").Return(uint(1))
 	GetInputUserAdapter = mockGetInput
-	err := StartGame(&flow)
 
-	if err != nil {
+	if err := StartGame(&flow); err != nil {
+		t.Fail()
+	}
+}
+
+func TestComputeDebugComplexity_INCREASE(t *testing.T) {
+	flow := config.Flow{
+		Rounds:          15,
+		DebugComplexity: 0,
+	}
+	ComputeDebugComplexity(&flow, 1)
+
+	if flow.DebugComplexity != 1 {
+		t.Fail()
+	}
+}
+
+func TestComputeDebugComplexity_DECREASE(t *testing.T) {
+	flow := config.Flow{
+		Rounds:          15,
+		DebugComplexity: 0,
+	}
+	ComputeDebugComplexity(&flow, -1)
+
+	if flow.DebugComplexity != -1 {
 		t.Fail()
 	}
 }
