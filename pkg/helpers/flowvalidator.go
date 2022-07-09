@@ -5,7 +5,6 @@ import (
 
 	"github.com/evertotomalok/text-game/internal/app/config"
 	e "github.com/evertotomalok/text-game/internal/core/errs"
-	"github.com/evertotomalok/text-game/pkg/utils"
 )
 
 func FlowValidator(flow *config.Flow) error {
@@ -26,17 +25,15 @@ func loopToCollectRoundsNumber(flow *config.Flow) error {
 		_, err := fmt.Scanln(&rounds)
 
 		if err != nil {
-			utils.ClearTerminal()
 			fmt.Println("Please, type only NUMBERS...")
 			continue
 		}
 
 		if rounds >= 15 && rounds <= 30 {
 			flow.Rounds = rounds
-			fmt.Printf("\nNice. We'll play with %d rounds.\n", rounds)
+			fmt.Printf("\n---------------------------\nNice. We'll play with %d rounds.\n---------------------------\n\n", rounds)
 			return nil
 		}
-		utils.ClearTerminal()
 	}
 	return new(e.NotNumberError)
 }
