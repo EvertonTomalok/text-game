@@ -5,6 +5,7 @@ import (
 
 	"github.com/evertotomalok/text-game/internal/app/config"
 	"github.com/evertotomalok/text-game/internal/ui/cli"
+	"github.com/evertotomalok/text-game/internal/ui/cli/adapters"
 )
 
 func Execute() {
@@ -16,5 +17,8 @@ func Execute() {
 		DebugComplexity: 0,
 	}
 
-	cli.StartGame(&flow)
+	cli.GetInputUserAdapter = new(adapters.UserInputAdapter)
+	cli.FlowControllerAdapter = new(adapters.FlowController)
+
+	_ = cli.StartGame(&flow)
 }
