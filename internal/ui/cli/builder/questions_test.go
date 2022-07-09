@@ -43,7 +43,7 @@ func TestQuestionsBuilder_OK(t *testing.T) {
 	for _, scenarioTest := range scenariosTest {
 		questions, _ := CreateQuestions(uint(scenarioTest.RoundNumber))
 		if len(questions) != int(scenarioTest.ExpectedQuestions) {
-			t.Fail()
+			t.Errorf("the number of Expected Questions was %d but received %d", scenarioTest.ExpectedQuestions, len(questions))
 		}
 	}
 }
@@ -72,7 +72,7 @@ func TestQuestionsBuilder_NOT_OK(t *testing.T) {
 		_, err := CreateQuestions(uint(scenarioTest.RoundNumber))
 
 		if err == nil {
-			t.Fail()
+			t.Error("it must receive an error, but it didn't receive")
 		}
 	}
 }

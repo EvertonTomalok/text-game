@@ -6,7 +6,7 @@ var MainQuestions map[uint]Question = map[uint]Question{
 
 	1: {
 		ID:   1,
-		Text: "Opss... We have a trouble with our application, and all the system is down. What should we do?",
+		Text: "Opss... We have a trouble with our application, and all the system is down. What will you do?",
 		FirstAlternative: QuestionAlternative{
 			Text:                     "Tell the team to enter in a war room.",
 			RedirectTo:               1,
@@ -111,7 +111,7 @@ var MainQuestions map[uint]Question = map[uint]Question{
 			DebugComplexityCalculate: -1,
 		},
 		SecondAlternative: QuestionAlternative{
-			Text:                     "Make changes rigth away, and after you'll report it to the other team.",
+			Text:                     "Make changes right away, and after you report it to the other team.",
 			RedirectTo:               16,
 			DebugComplexityCalculate: 1,
 		},
@@ -135,7 +135,7 @@ var ComplementaryQuestions map[uint]ComplementaryQuestion = map[uint]Complementa
 	},
 	2: {
 		ID:   2,
-		Text: "OOOOhhhh nooooo. Your try didn't help, and the app isn't answer more.",
+		Text: "OOOOhhhh nooooo. Your change didn't help, and the app isn't answer more.",
 		FirstAlternative: ComplementaryQuestionAlternative{
 			Text:                     "Try to open a connection with the instance.",
 			DebugComplexityCalculate: -1,

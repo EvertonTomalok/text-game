@@ -18,6 +18,8 @@ func CreateQuestions(rounds uint) ([]domain.Question, error) {
 		rounds++
 	}
 
+	// Minimum rounds = 15
+	// If it's odd, we add 1 to number of rounds to retrieve an integer rounds number
 	baseQuestions := 8
 	necessaryQuestion := rounds/2 - uint(baseQuestions)
 	var additionalQuestions []domain.Question = suffleQuestions()
@@ -29,7 +31,7 @@ func CreateQuestions(rounds uint) ([]domain.Question, error) {
 	return questions, nil
 }
 
-func suffleQuestionsNumbers() []uint {
+func getShuffledQuestions() []uint {
 	numbers := make([]uint, len(shared.MainQuestions))
 
 	for i := 1; i < len(shared.MainQuestions); i++ {
@@ -40,7 +42,7 @@ func suffleQuestionsNumbers() []uint {
 }
 
 func suffleQuestions() []domain.Question {
-	randomNumbers := suffleQuestionsNumbers()
+	randomNumbers := getShuffledQuestions()
 
 	var questions []domain.Question
 
