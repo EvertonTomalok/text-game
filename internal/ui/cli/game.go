@@ -1,7 +1,6 @@
 package cli
 
 import (
-	"bytes"
 	"fmt"
 
 	"github.com/evertotomalok/text-game/internal/app/config"
@@ -104,16 +103,15 @@ func computeDebugComplexity(flow *config.Flow, complexity int) {
 }
 
 func getFlowResult(flow *config.Flow) {
-	var buffer bytes.Buffer
-	for i := 0; i < 150; i++ {
-		buffer.WriteString("-")
-	}
+	separator := utils.Separator("-", 150)
 
-	fmt.Println(buffer.String())
+	fmt.Println(separator)
+
 	if flow.DebugComplexity > 0 {
 		fmt.Printf("Your turn is over. You're fired because you couldn't handle with the problems. [Complexity: %d]\n", flow.DebugComplexity)
 	} else {
 		fmt.Printf("You're a super hero! Thank you for saving the day!!!!!! [Complexity: %d]\n", flow.DebugComplexity)
 	}
-	fmt.Println(buffer.String())
+
+	fmt.Println(separator)
 }
