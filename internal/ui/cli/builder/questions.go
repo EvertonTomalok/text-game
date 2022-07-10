@@ -27,16 +27,21 @@ func CreateQuestions(rounds uint) ([]domain.Question, error) {
 	}
 
 	/*
-	* First of all, we populate the question with minimum rounds value acceptable, in this case will be 8 (all questions available)
+	* First of all, we'll populate the question with the minimum rounds value acceptable, in this case will be 8 (all questions available)
 	* Each question will take 2 rounds:
 	* 	First: The main QUESTION
 	*	Second: The complementary QUESTION
 	*
-	* This way we'll have at least 16 question.
+	* On this way we'll have at least 16 question.
 	 */
-	var questions []domain.Question = suffleQuestions(
+
+	questions, err := suffleQuestions(
 		len(shared.MainQuestions),
 	)
+
+	if err != nil {
+		return make([]domain.Question, 0), err
+	}
 
 	if !utils.IntegerIsEven(int64(rounds)) {
 		rounds++
@@ -48,9 +53,13 @@ func CreateQuestions(rounds uint) ([]domain.Question, error) {
 		baseQuestions := uint(8)
 		necessaryQuestion := rounds/2 - baseQuestions
 
-		var additionalQuestions []domain.Question = suffleQuestions(
+		additionalQuestions, err := suffleQuestions(
 			int(necessaryQuestion),
 		)
+
+		if err != nil {
+			return make([]domain.Question, 0), err
+		}
 
 		/* Now populate the rest of the questions that the porgram will need, to achieve from 15 to 30 available rounds */
 		questions = append(questions, additionalQuestions...)
@@ -69,7 +78,7 @@ func getShuffledQuestionsNumbers() []uint {
 	return utils.Shuffle(numbers)
 }
 
-func suffleQuestions(numQuestions int) []domain.Question {
+func suffleQuestions(numQuestions int) ([]domain.Question, error) {
 
 	if numQuestions > len(shared.MainQuestions) {
 		numQuestions = len(shared.MainQuestions)
@@ -84,8 +93,13 @@ func suffleQuestions(numQuestions int) []domain.Question {
 	// Listen to the results channel to populate the questions' slice
 	for m := 0; m < numQuestions; m++ {
 		question := <-results
+
+		if question.ID == 0 {
+			return questionsContainer.Questions, new(errs.InvalidQuestion)
+		}
+
 		questionsContainer.AddQuestion(question)
 	}
 
-	return questionsContainer.Questions
+	return questionsContainer.Questions, nil
 }
