@@ -6,3 +6,9 @@ start-game:
 
 setup:
 	go mod tidy
+
+build:
+	go build .
+
+build-and-run:
+	go build . && ./text-game
