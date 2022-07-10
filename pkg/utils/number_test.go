@@ -17,3 +17,11 @@ func TestIsEven_False(t *testing.T) {
 		t.Fail()
 	}
 }
+
+func TestUrange_OK(t *testing.T) {
+	urange := URange(0, 10)
+
+	if len(urange) != 10 {
+		t.Fail()
+	}
+}

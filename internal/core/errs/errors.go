@@ -15,3 +15,19 @@ type InvalidRoundsNumber struct {
 func (e *InvalidRoundsNumber) Error() string {
 	return e.Message
 }
+
+type InvalidQuestion struct {
+	Message string
+}
+
+func (e *InvalidQuestion) Error() string {
+	return e.Message
+}
+
+type InvalidComplementaryQuestion struct {
+	Message string
+}
+
+func (e *InvalidComplementaryQuestion) Error() string {
+	return e.Message
+}

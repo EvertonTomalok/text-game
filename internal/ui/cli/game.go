@@ -14,8 +14,8 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-var GetInputUserAdapter ports.InputInterface
-var FlowControllerAdapter ports.FlowInterface
+var GetInputUserAdapter ports.InputGateway
+var FlowControllerAdapter ports.FlowGateway
 
 func StartGame(flow *config.Flow) error {
 	// Refactor and implements a CoR  design pattern where each node will be a step
@@ -32,41 +32,67 @@ func StartGame(flow *config.Flow) error {
 		return err
 	}
 
-	questionsHandler(flow, questions)
-	GetFlowResult(flow)
+	if err = questionsHandler(flow, questions); err != nil {
+		return err
+	}
+
+	getFlowResult(flow)
 
 	return nil
 }
 
-func questionsHandler(flow *config.Flow, questions []domain.Question) {
+func questionsHandler(flow *config.Flow, questions []domain.Question) error {
 	for _, question := range questions {
-		questionChoice := displayQuestion(question)
-		var complemetaryQuestion domain.ComplementaryQuestion
-
-		switch questionChoice {
-		case 1:
-			ComputeDebugComplexity(flow, question.FirstAlternative.DebugComplexityCalculate)
-			complemetaryQuestion = shared.ComplementaryQuestions[uint(question.FirstAlternative.RedirectTo)]
-		case 2:
-			ComputeDebugComplexity(flow, question.SecondAlternative.DebugComplexityCalculate)
-			complemetaryQuestion = shared.ComplementaryQuestions[uint(question.SecondAlternative.RedirectTo)]
+		complemetaryQuestion, err := ProcessQuestion(question, flow)
+		if err != nil {
+			return err
 		}
 
-		complementaryChoice := displayComplementaryQuestion(complemetaryQuestion)
-
-		fmt.Println()
-
-		switch complementaryChoice {
-		case 1:
-			ComputeDebugComplexity(flow, complemetaryQuestion.FirstAlternative.DebugComplexityCalculate)
-			fmt.Println(complemetaryQuestion.FirstAlternative.TransitionMessage)
-		case 2:
-			ComputeDebugComplexity(flow, complemetaryQuestion.SecondAlternative.DebugComplexityCalculate)
-			fmt.Println(complemetaryQuestion.SecondAlternative.TransitionMessage)
+		if err = ProcessComplementaryQuestion(complemetaryQuestion, flow); err != nil {
+			return err
 		}
 
-		fmt.Println()
 	}
+	return nil
+}
+
+func ProcessQuestion(question domain.Question, flow *config.Flow) (domain.ComplementaryQuestion, error) {
+	questionChoice := displayQuestion(question)
+	var complemetaryQuestion domain.ComplementaryQuestion
+
+	switch questionChoice {
+	case 1:
+		ComputeDebugComplexity(flow, question.FirstAlternative.DebugComplexityCalculate)
+		complemetaryQuestion = shared.ComplementaryQuestions[uint(question.FirstAlternative.RedirectTo)]
+	case 2:
+		ComputeDebugComplexity(flow, question.SecondAlternative.DebugComplexityCalculate)
+		complemetaryQuestion = shared.ComplementaryQuestions[uint(question.SecondAlternative.RedirectTo)]
+	default:
+		return complemetaryQuestion, &errs.InvalidQuestion{}
+	}
+
+	return complemetaryQuestion, nil
+}
+
+func ProcessComplementaryQuestion(complemetaryQuestion domain.ComplementaryQuestion, flow *config.Flow) error {
+	complementaryChoice := displayComplementaryQuestion(complemetaryQuestion)
+
+	fmt.Println()
+
+	switch complementaryChoice {
+	case 1:
+		ComputeDebugComplexity(flow, complemetaryQuestion.FirstAlternative.DebugComplexityCalculate)
+		fmt.Println(complemetaryQuestion.FirstAlternative.TransitionMessage)
+	case 2:
+		ComputeDebugComplexity(flow, complemetaryQuestion.SecondAlternative.DebugComplexityCalculate)
+		fmt.Println(complemetaryQuestion.SecondAlternative.TransitionMessage)
+	default:
+		return &errs.InvalidComplementaryQuestion{}
+	}
+
+	fmt.Println()
+
+	return nil
 }
 
 func displayQuestion(q domain.Question) uint {
@@ -102,7 +128,7 @@ func ComputeDebugComplexity(flow *config.Flow, complexity int) {
 	}
 }
 
-func GetFlowResult(flow *config.Flow) {
+func getFlowResult(flow *config.Flow) {
 	separator := utils.Separator("-", 150)
 
 	fmt.Println(separator)

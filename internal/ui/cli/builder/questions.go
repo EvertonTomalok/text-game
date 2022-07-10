@@ -1,18 +1,48 @@
 package builder
 
 import (
+	"sync"
+
 	"github.com/evertotomalok/text-game/internal/app/shared"
 	"github.com/evertotomalok/text-game/internal/core/domain"
 	"github.com/evertotomalok/text-game/internal/core/errs"
 	"github.com/evertotomalok/text-game/pkg/utils"
 )
 
+type QuestionsContainer struct {
+	mu        sync.Mutex
+	Questions []domain.Question
+}
+
+func (q *QuestionsContainer) AddQuestion(question domain.Question) {
+	q.mu.Lock()
+	defer q.mu.Unlock()
+
+	q.Questions = append(q.Questions, question)
+}
+
 func CreateQuestions(rounds uint) ([]domain.Question, error) {
 	if rounds < 15 || rounds > 30 {
 		return make([]domain.Question, 0), new(errs.InvalidRoundsNumber)
 	}
 
-	var questions []domain.Question = suffleQuestions()
+	/*
+	* First of all, we'll populate the question with the minimum rounds value acceptable, in this case will be 8 (all questions available)
+	* Each question will take 2 rounds:
+	* 	First: The main QUESTION
+	*	Second: The complementary QUESTION
+	*
+	* On this way we'll have at least 16 question.
+	 */
+
+	baseQuestions := 8
+	questions, err := shuffleQuestions(
+		baseQuestions,
+	)
+
+	if err != nil {
+		return make([]domain.Question, 0), err
+	}
 
 	if !utils.IntegerIsEven(int64(rounds)) {
 		rounds++
@@ -20,35 +50,55 @@ func CreateQuestions(rounds uint) ([]domain.Question, error) {
 
 	// Minimum rounds = 15
 	// If it's odd, we add 1 to number of rounds to retrieve an integer rounds number
-	baseQuestions := 8
-	necessaryQuestion := rounds/2 - uint(baseQuestions)
-	var additionalQuestions []domain.Question = suffleQuestions()
+	if rounds > 16 {
+		necessaryQuestion := int(rounds)/2 - baseQuestions
 
-	for i := 0; i < int(necessaryQuestion); i++ {
-		questions = append(questions, additionalQuestions[i])
+		additionalQuestions, err := shuffleQuestions(
+			necessaryQuestion,
+		)
+
+		if err != nil {
+			return make([]domain.Question, 0), err
+		}
+
+		/* Now populate the rest of the questions that the porgram will need, to achieve from 15 to 30 available rounds */
+		questions = append(questions, additionalQuestions...)
 	}
 
 	return questions, nil
 }
 
-func getShuffledQuestions() []uint {
-	numbers := make([]uint, len(shared.MainQuestions))
-
-	for i := 1; i < len(shared.MainQuestions); i++ {
-		numbers[i] = uint(i)
-	}
+func getShuffledQuestionsNumbers() []uint {
+	numbers := utils.URange(
+		1,
+		uint(len(shared.MainQuestions)),
+	)
 
 	return utils.Shuffle(numbers)
 }
 
-func suffleQuestions() []domain.Question {
-	randomNumbers := getShuffledQuestions()
+func shuffleQuestions(numQuestions int) ([]domain.Question, error) {
 
-	var questions []domain.Question
-
-	for _, v := range randomNumbers {
-		questions = append(questions, shared.MainQuestions[v])
+	if numQuestions > len(shared.MainQuestions) {
+		numQuestions = len(shared.MainQuestions)
 	}
 
-	return questions
+	randomNumbers := getShuffledQuestionsNumbers()[:numQuestions]
+
+	results := QuestionsWorkerPoolInitiate(numQuestions, randomNumbers)
+
+	questionsContainer := &QuestionsContainer{}
+
+	// Listen to the results channel to populate the questions' slice
+	for m := 0; m < numQuestions; m++ {
+		question := <-results
+
+		if question.ID == 0 {
+			return []domain.Question{}, &errs.InvalidQuestion{}
+		}
+
+		questionsContainer.AddQuestion(question)
+	}
+
+	return questionsContainer.Questions, nil
 }
