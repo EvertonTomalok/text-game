@@ -7,7 +7,7 @@ import (
 )
 
 type TestCase struct {
-	QuestionsNumber       int
+	RandomNumber          []uint // 0 <-> 7
 	ExpectQuestionsNumber int
 }
 
@@ -24,6 +24,26 @@ func TestMakeChannels(t *testing.T) {
 	}
 }
 
-func TestWorkerPoolInitiate(t *testing.T) {
+func TestQuestionsWorkerPoolInitiate(t *testing.T) {
 
+	testCase := TestCase{
+		RandomNumber:          []uint{5, 3, 4},
+		ExpectQuestionsNumber: 3,
+	}
+
+	questionsContainer := &QuestionsContainer{}
+	results := QuestionsWorkerPoolInitiate(len(testCase.RandomNumber), testCase.RandomNumber)
+
+	for n := 0; n < len(testCase.RandomNumber); n++ {
+		question := <-results
+		questionsContainer.AddQuestion(question)
+	}
+
+	if len(questionsContainer.Questions) != testCase.ExpectQuestionsNumber {
+		t.Errorf(
+			"the expected number of questions were %d and received %d",
+			len(questionsContainer.Questions),
+			testCase.ExpectQuestionsNumber,
+		)
+	}
 }
