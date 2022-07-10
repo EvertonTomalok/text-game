@@ -23,3 +23,11 @@ type InvalidQuestion struct {
 func (e *InvalidQuestion) Error() string {
 	return e.Message
 }
+
+type InvalidComplementaryQuestion struct {
+	Message string
+}
+
+func (e *InvalidComplementaryQuestion) Error() string {
+	return e.Message
+}
