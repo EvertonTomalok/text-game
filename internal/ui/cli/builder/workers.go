@@ -31,3 +31,16 @@ func PopulateTasks(tasks chan uint, nums []uint) {
 	}
 	close(tasks)
 }
+
+func QuestionsWorkerPoolInitiate(numTasks int, randomNumbers []uint) <-chan domain.Question {
+	tasks, results := CreateChannels(numTasks)
+
+	workersNum := 8
+	if workersNum > numTasks {
+		workersNum = numTasks
+	}
+
+	CreateWorkers(tasks, results, workersNum)
+	PopulateTasks(tasks, randomNumbers)
+	return results
+}

@@ -1,11 +1,25 @@
 package builder
 
 import (
+	"sync"
+
 	"github.com/evertotomalok/text-game/internal/app/shared"
 	"github.com/evertotomalok/text-game/internal/core/domain"
 	"github.com/evertotomalok/text-game/internal/core/errs"
 	"github.com/evertotomalok/text-game/pkg/utils"
 )
+
+type QuestionsContainer struct {
+	mu        sync.Mutex
+	Questions []domain.Question
+}
+
+func (q *QuestionsContainer) AddQuestion(question domain.Question) {
+	q.mu.Lock()
+	defer q.mu.Unlock()
+
+	q.Questions = append(q.Questions, question)
+}
 
 func CreateQuestions(rounds uint) ([]domain.Question, error) {
 	if rounds < 15 || rounds > 30 {
@@ -20,7 +34,9 @@ func CreateQuestions(rounds uint) ([]domain.Question, error) {
 	*
 	* This way we'll have at least 16 question.
 	 */
-	var questions []domain.Question = suffleQuestions()
+	var questions []domain.Question = suffleQuestions(
+		len(shared.MainQuestions),
+	)
 
 	if !utils.IntegerIsEven(int64(rounds)) {
 		rounds++
@@ -28,13 +44,16 @@ func CreateQuestions(rounds uint) ([]domain.Question, error) {
 
 	// Minimum rounds = 15
 	// If it's odd, we add 1 to number of rounds to retrieve an integer rounds number
-	baseQuestions := 8
-	necessaryQuestion := rounds/2 - uint(baseQuestions)
-	var additionalQuestions []domain.Question = suffleQuestions()
+	if rounds > 16 {
+		baseQuestions := uint(8)
+		necessaryQuestion := rounds/2 - baseQuestions
 
-	/* Now populate the rest of the questions that the porgram will need, to achieve from 15 to 30 available rounds */
-	for i := 0; i < int(necessaryQuestion); i++ {
-		questions = append(questions, additionalQuestions[i])
+		var additionalQuestions []domain.Question = suffleQuestions(
+			int(necessaryQuestion),
+		)
+
+		/* Now populate the rest of the questions that the porgram will need, to achieve from 15 to 30 available rounds */
+		questions = append(questions, additionalQuestions...)
 	}
 
 	return questions, nil
@@ -50,23 +69,23 @@ func getShuffledQuestionsNumbers() []uint {
 	return utils.Shuffle(numbers)
 }
 
-func suffleQuestions() []domain.Question {
-	workersNum := 5
-	var questions []domain.Question
+func suffleQuestions(numQuestions int) []domain.Question {
 
-	randomNumbers := getShuffledQuestionsNumbers()
-	numTasks := len(randomNumbers)
-
-	tasks, results := CreateChannels(numTasks)
-
-	CreateWorkers(tasks, results, workersNum)
-	PopulateTasks(tasks, randomNumbers)
-
-	// Listen to the results channel to populate the questions slice
-	for m := 0; m < numTasks; m++ {
-		question := <-results
-		questions = append(questions, question)
+	if numQuestions > len(shared.MainQuestions) {
+		numQuestions = len(shared.MainQuestions)
 	}
 
-	return questions
+	randomNumbers := getShuffledQuestionsNumbers()[:numQuestions]
+
+	results := QuestionsWorkerPoolInitiate(numQuestions, randomNumbers)
+
+	questionsContainer := &QuestionsContainer{}
+
+	// Listen to the results channel to populate the questions' slice
+	for m := 0; m < numQuestions; m++ {
+		question := <-results
+		questionsContainer.AddQuestion(question)
+	}
+
+	return questionsContainer.Questions
 }
