@@ -135,10 +135,11 @@ func displayComplementaryQuestion(c domain.ComplementaryQuestion) uint {
 }
 
 func ComputeDebugComplexity(flow *config.Flow, complexity int) {
-	if complexity > 0 {
+	if complexity >= 0 {
 		helpers.IncrementOneToComplexity(flow, complexity)
 	} else {
-		helpers.DecrementOneToComplexity(flow, complexity*-1)
+		abs := complexity * -1 // Get Absolute Value
+		helpers.DecrementOneToComplexity(flow, abs)
 	}
 }
 
