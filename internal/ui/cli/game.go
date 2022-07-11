@@ -47,7 +47,7 @@ func StartGame(flow *config.Flow) error {
 }
 
 func questionsHandler(flow *config.Flow, questions []domain.Question) error {
-	for _, question := range questions {
+	for i, question := range questions {
 		complemetaryQuestion, err := ProcessQuestion(question, flow)
 		if err != nil {
 			return err
@@ -55,6 +55,10 @@ func questionsHandler(flow *config.Flow, questions []domain.Question) error {
 
 		if err = ProcessComplementaryQuestion(complemetaryQuestion, flow); err != nil {
 			return err
+		}
+
+		if i+1 >= int(flow.Rounds) {
+			break
 		}
 
 	}
