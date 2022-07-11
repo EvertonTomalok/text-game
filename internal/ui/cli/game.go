@@ -11,6 +11,7 @@ import (
 	"github.com/evertotomalok/text-game/internal/ui/cli/builder"
 	"github.com/evertotomalok/text-game/pkg/helpers"
 	"github.com/evertotomalok/text-game/pkg/utils"
+	"github.com/evertotomalok/text-game/pkg/utils/colors"
 	log "github.com/sirupsen/logrus"
 )
 
@@ -22,7 +23,11 @@ func StartGame(flow *config.Flow) error {
 	// https://refactoring.guru/design-patterns/chain-of-responsibility
 
 	if err := FlowControllerAdapter.FlowValidator(flow); err != nil {
-		log.Error("It was not possible to determine the number of rounds.")
+		log.Errorf(
+			"%sIt was not possible to determine the number of rounds.%s",
+			colors.RED,
+			colors.END,
+		)
 		return &errs.InvalidRoundsNumber{}
 	}
 
@@ -82,10 +87,10 @@ func ProcessComplementaryQuestion(complemetaryQuestion domain.ComplementaryQuest
 	switch complementaryChoice {
 	case 1:
 		ComputeDebugComplexity(flow, complemetaryQuestion.FirstAlternative.DebugComplexityCalculate)
-		fmt.Println(complemetaryQuestion.FirstAlternative.TransitionMessage)
+		fmt.Printf("\n-> %s\n\n", complemetaryQuestion.FirstAlternative.TransitionMessage)
 	case 2:
 		ComputeDebugComplexity(flow, complemetaryQuestion.SecondAlternative.DebugComplexityCalculate)
-		fmt.Println(complemetaryQuestion.SecondAlternative.TransitionMessage)
+		fmt.Printf("\n-> %s\n\n", complemetaryQuestion.SecondAlternative.TransitionMessage)
 	default:
 		return &errs.InvalidComplementaryQuestion{}
 	}
@@ -96,9 +101,14 @@ func ProcessComplementaryQuestion(complemetaryQuestion domain.ComplementaryQuest
 }
 
 func displayQuestion(q domain.Question) uint {
-	fmt.Println("Question: ", q.Text)
-	fmt.Println("1 - ", q.FirstAlternative.Text)
-	fmt.Println("2 - ", q.SecondAlternative.Text)
+	separator := utils.Separator("-", 150)
+
+	println(separator)
+	fmt.Printf("%sQuestion: %s%s\n", colors.YELLOW, colors.END, q.Text)
+	println(separator)
+
+	fmt.Printf("%s1 - %s %s\n", colors.BLUE, q.FirstAlternative.Text, colors.END)
+	fmt.Printf("%s2 - %s %s\n\n", colors.GREEN, q.SecondAlternative.Text, colors.END)
 	fmt.Printf("Chose one [1 - 2]: ")
 
 	choice := GetInputUserAdapter.GetValidInput()
@@ -108,10 +118,14 @@ func displayQuestion(q domain.Question) uint {
 }
 
 func displayComplementaryQuestion(c domain.ComplementaryQuestion) uint {
-	fmt.Println()
-	fmt.Println(c.Text)
-	fmt.Println("1 - ", c.FirstAlternative.Text)
-	fmt.Println("2 - ", c.SecondAlternative.Text)
+	separator := utils.Separator("-", 150)
+
+	fmt.Println(separator)
+	fmt.Printf("%sResult:%s %s \n", colors.YELLOW, colors.END, c.Text)
+	fmt.Println(separator)
+
+	fmt.Printf("%s1 - %s%s\n", colors.BLUE, c.FirstAlternative.Text, colors.END)
+	fmt.Printf("%s2 - %s%s\n\n", colors.GREEN, c.SecondAlternative.Text, colors.END)
 	fmt.Printf("Chose one [1 - 2]: ")
 
 	choice := GetInputUserAdapter.GetValidInput()
@@ -129,14 +143,23 @@ func ComputeDebugComplexity(flow *config.Flow, complexity int) {
 }
 
 func getFlowResult(flow *config.Flow) {
-	separator := utils.Separator("-", 150)
+	separator := utils.Separator("-", 80)
 
 	fmt.Println(separator)
 
 	if flow.DebugComplexity > 0 {
-		fmt.Printf("Your turn is over. You're fired because you couldn't handle with the problems. [Complexity: %d]\n", flow.DebugComplexity)
+		fmt.Printf(
+			"%sYour turn is over. You're fired because you couldn't handle with the problems.%s [Complexity: %d]\n",
+			colors.RED,
+			colors.END,
+			flow.DebugComplexity)
 	} else {
-		fmt.Printf("You're a super hero! Thank you for saving the day!!!!!! [Complexity: %d]\n", flow.DebugComplexity)
+		fmt.Printf(
+			"%sYou're a super hero! Thank you for saving the day!!!!!!%s [Complexity: %d]\n",
+			colors.GREEN,
+			colors.END,
+			flow.DebugComplexity,
+		)
 	}
 
 	fmt.Println(separator)
