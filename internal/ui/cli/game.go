@@ -150,18 +150,19 @@ func getFlowResult(flow *config.Flow) {
 
 	if flow.DebugComplexity > 0 {
 		fmt.Printf(
-			"%sYour turn is over. You're fired because you couldn't handle with the problems.%s [Complexity: %d]\n",
+			"%sYour turn is over. You're fired because you couldn't handle the problems.%s\n",
 			colors.RED,
 			colors.END,
-			flow.DebugComplexity)
+		)
 	} else {
 		fmt.Printf(
-			"%sYou're a super hero! Thank you for saving the day!!!!!!%s [Complexity: %d]\n",
+			"%sYou're a superhero! Thank you for saving the day!!!!!!%s\n",
 			colors.GREEN,
 			colors.END,
-			flow.DebugComplexity,
 		)
 	}
 
 	fmt.Println(separator)
+
+	log.Infof("[Complexity: %d]", flow.DebugComplexity)
 }

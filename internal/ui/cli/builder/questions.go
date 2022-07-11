@@ -27,12 +27,12 @@ func CreateQuestions(rounds uint) ([]domain.Question, error) {
 	}
 
 	/*
-	* First of all, we'll populate the question with the minimum rounds value acceptable, in this case will be 8 (all questions available)
+	* First of all, we'll populate the questions with the value of the minimum round acceptable, which in this case, will be 8 (all questions available).
 	* Each question will take 2 rounds:
 	* 	First: The main QUESTION
 	*	Second: The complementary QUESTION
 	*
-	* On this way we'll have at least 16 question.
+	* So we'll have at least 16 questions.
 	 */
 
 	baseQuestions := 8
@@ -49,7 +49,7 @@ func CreateQuestions(rounds uint) ([]domain.Question, error) {
 	}
 
 	// Minimum rounds = 15
-	// If it's odd, we add 1 to number of rounds to retrieve an integer rounds number
+	// If it's odd, we add 1 to the number of rounds to retrieve an integer rounds number.
 	if rounds > 16 {
 		necessaryQuestion := int(rounds)/2 - baseQuestions
 
@@ -61,7 +61,7 @@ func CreateQuestions(rounds uint) ([]domain.Question, error) {
 			return make([]domain.Question, 0), err
 		}
 
-		/* Now populate the rest of the questions that the porgram will need, to achieve from 15 to 30 available rounds */
+		/* Now populate the rest of the questions that the program will need, to achieve from 15 to 30 available rounds */
 		questions = append(questions, additionalQuestions...)
 	}
 
@@ -89,7 +89,7 @@ func shuffleQuestions(numQuestions int) ([]domain.Question, error) {
 
 	questionsContainer := &QuestionsContainer{}
 
-	// Listen to the results channel to populate the questions' slice
+	// Listen to the results channel to populate the questions' slice.
 	for m := 0; m < numQuestions; m++ {
 		question := <-results
 
