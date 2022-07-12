@@ -113,7 +113,7 @@ func displayQuestion(q domain.Question) uint {
 
 	fmt.Printf("%s1 - %s %s\n", colors.BLUE, q.FirstAlternative.Text, colors.END)
 	fmt.Printf("%s2 - %s %s\n\n", colors.GREEN, q.SecondAlternative.Text, colors.END)
-	fmt.Printf("Chose one [1 - 2]: ")
+	fmt.Printf("Choose one [1 - 2]: ")
 
 	choice := GetInputUserAdapter.GetValidInput()
 	utils.ClearTerminal()
@@ -130,7 +130,7 @@ func displayComplementaryQuestion(c domain.ComplementaryQuestion) uint {
 
 	fmt.Printf("%s1 - %s%s\n", colors.BLUE, c.FirstAlternative.Text, colors.END)
 	fmt.Printf("%s2 - %s%s\n\n", colors.GREEN, c.SecondAlternative.Text, colors.END)
-	fmt.Printf("Chose one [1 - 2]: ")
+	fmt.Printf("Choose one [1 - 2]: ")
 
 	choice := GetInputUserAdapter.GetValidInput()
 	utils.ClearTerminal()
