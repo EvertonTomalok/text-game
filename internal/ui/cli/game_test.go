@@ -3,11 +3,11 @@ package cli_test
 import (
 	"testing"
 
+	cliMocker "github.com/evertotomalok/text-game/internal/app/adapters/mocks"
 	"github.com/evertotomalok/text-game/internal/app/config"
 	"github.com/evertotomalok/text-game/internal/app/shared"
 	"github.com/evertotomalok/text-game/internal/core/ports/mocks"
 	. "github.com/evertotomalok/text-game/internal/ui/cli"
-	cliMocker "github.com/evertotomalok/text-game/internal/ui/cli/adapters/mocks"
 )
 
 type TestMainQuestionCase struct {

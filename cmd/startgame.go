@@ -5,9 +5,9 @@ import (
 	"math/rand"
 	"time"
 
+	"github.com/evertotomalok/text-game/internal/app/adapters"
 	"github.com/evertotomalok/text-game/internal/app/config"
 	"github.com/evertotomalok/text-game/internal/ui/cli"
-	"github.com/evertotomalok/text-game/internal/ui/cli/adapters"
 )
 
 func Execute() {
