@@ -14,11 +14,11 @@ type QuestionsContainer struct {
 	Questions []domain.Question
 }
 
-func (q *QuestionsContainer) AddQuestion(question domain.Question) {
+func (q *QuestionsContainer) AddQuestion(question ...domain.Question) {
 	q.mu.Lock()
 	defer q.mu.Unlock()
 
-	q.Questions = append(q.Questions, question)
+	q.Questions = append(q.Questions, question...)
 }
 
 func CreateQuestions(rounds uint) ([]domain.Question, error) {
@@ -36,6 +36,8 @@ func CreateQuestions(rounds uint) ([]domain.Question, error) {
 	 */
 
 	baseQuestions := 8
+
+	questionsContainer := QuestionsContainer{}
 	questions, err := shuffleQuestions(
 		baseQuestions,
 	)
@@ -43,29 +45,22 @@ func CreateQuestions(rounds uint) ([]domain.Question, error) {
 	if err != nil {
 		return make([]domain.Question, 0), err
 	}
+	questionsContainer.AddQuestion(questions...)
 
+	// Minimum rounds = 15
+	// If it's odd, we add 1 to the number of rounds to retrieve an integer rounds number.
+	// So we'll have at least 16 rounds, but it will be interrupted at 15 it was the max rounds number
 	if !utils.IntegerIsEven(int64(rounds)) {
 		rounds++
 	}
 
-	// Minimum rounds = 15
-	// If it's odd, we add 1 to the number of rounds to retrieve an integer rounds number.
 	if rounds > 16 {
-		necessaryQuestion := int(rounds)/2 - baseQuestions
-
-		additionalQuestions, err := shuffleQuestions(
-			necessaryQuestion,
-		)
-
-		if err != nil {
+		if err := makeExtraQuestions(rounds, baseQuestions, &questionsContainer); err != nil {
 			return make([]domain.Question, 0), err
 		}
-
-		/* Now populate the rest of the questions that the program will need, to achieve from 15 to 30 available rounds */
-		questions = append(questions, additionalQuestions...)
 	}
 
-	return questions, nil
+	return questionsContainer.Questions, nil
 }
 
 func getShuffledQuestionsNumbers() []uint {
@@ -101,4 +96,20 @@ func shuffleQuestions(numQuestions int) ([]domain.Question, error) {
 	}
 
 	return questionsContainer.Questions, nil
+}
+
+func makeExtraQuestions(rounds uint, baseQuestions int, questionsContainer *QuestionsContainer) error {
+	necessaryQuestion := int(rounds)/2 - baseQuestions
+
+	additionalQuestions, err := shuffleQuestions(
+		necessaryQuestion,
+	)
+
+	if err != nil {
+		return err
+	}
+
+	/* Now populate the rest of the questions that the program will need, to achieve from 15 to 30 available rounds */
+	questionsContainer.AddQuestion(additionalQuestions...)
+	return nil
 }
