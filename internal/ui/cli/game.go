@@ -3,8 +3,8 @@ package cli
 import (
 	"fmt"
 
-	"github.com/evertotomalok/text-game/internal/app/config"
-	"github.com/evertotomalok/text-game/internal/app/shared"
+	"github.com/evertotomalok/text-game/internal/application/config"
+	"github.com/evertotomalok/text-game/internal/application/shared"
 	"github.com/evertotomalok/text-game/internal/core/domain"
 	"github.com/evertotomalok/text-game/internal/core/errs"
 	"github.com/evertotomalok/text-game/internal/core/ports"

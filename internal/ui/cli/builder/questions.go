@@ -3,7 +3,7 @@ package builder
 import (
 	"sync"
 
-	"github.com/evertotomalok/text-game/internal/app/shared"
+	"github.com/evertotomalok/text-game/internal/application/shared"
 	"github.com/evertotomalok/text-game/internal/core/domain"
 	"github.com/evertotomalok/text-game/internal/core/errs"
 	"github.com/evertotomalok/text-game/pkg/utils"

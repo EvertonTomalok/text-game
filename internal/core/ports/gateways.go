@@ -1,6 +1,6 @@
 package ports
 
-import "github.com/evertotomalok/text-game/internal/app/config"
+import "github.com/evertotomalok/text-game/internal/application/config"
 
 // go:generate mockery --name=InputGateway
 type InputGateway interface {

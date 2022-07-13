@@ -1,7 +1,7 @@
 package mocks
 
 import (
-	"github.com/evertotomalok/text-game/internal/app/config"
+	"github.com/evertotomalok/text-game/internal/application/config"
 	"github.com/evertotomalok/text-game/internal/core/errs"
 )
 

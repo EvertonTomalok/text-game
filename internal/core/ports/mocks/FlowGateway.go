@@ -3,7 +3,7 @@
 package mocks
 
 import (
-	config "github.com/evertotomalok/text-game/internal/app/config"
+	config "github.com/evertotomalok/text-game/internal/application/config"
 	mock "github.com/stretchr/testify/mock"
 )
 
