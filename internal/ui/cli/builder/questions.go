@@ -49,7 +49,7 @@ func CreateQuestions(rounds uint) ([]domain.Question, error) {
 
 	// Minimum rounds = 15
 	// If it's odd, we add 1 to the number of rounds to retrieve an integer rounds number.
-	// So we'll have at least 16 rounds, but it will be interrupted at 15 it was the max rounds number
+	// So we'll have at least 16 rounds, but it will be interrupted at 15 it is the max rounds number
 	if !utils.IntegerIsEven(int64(rounds)) {
 		rounds++
 	}

@@ -53,12 +53,12 @@ func questionsHandler(flow *config.Flow, questions []domain.Question) error {
 			return err
 		}
 
-		if err = ProcessComplementaryQuestion(complemetaryQuestion, flow); err != nil {
-			return err
+		if (i*2)+1 >= int(flow.Rounds) {
+			break
 		}
 
-		if i+1 >= int(flow.Rounds) {
-			break
+		if err = ProcessComplementaryQuestion(complemetaryQuestion, flow); err != nil {
+			return err
 		}
 
 	}
