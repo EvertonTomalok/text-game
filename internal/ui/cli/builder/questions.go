@@ -3,7 +3,6 @@ package builder
 import (
 	"sync"
 
-	"github.com/evertotomalok/text-game/internal/application/shared"
 	"github.com/evertotomalok/text-game/internal/core/domain"
 	"github.com/evertotomalok/text-game/internal/core/errs"
 	"github.com/evertotomalok/text-game/pkg/utils"
@@ -38,7 +37,7 @@ func CreateQuestions(rounds uint) ([]domain.Question, error) {
 	baseQuestions := 8
 
 	questionsContainer := QuestionsContainer{}
-	questions, err := shuffleQuestions(
+	questions, err := makeShuffledQuestions(
 		baseQuestions,
 	)
 
@@ -63,31 +62,14 @@ func CreateQuestions(rounds uint) ([]domain.Question, error) {
 	return questionsContainer.Questions, nil
 }
 
-func getShuffledQuestionsNumbers() []uint {
-	numbers := utils.URange(
-		1,
-		uint(len(shared.MainQuestions)),
-	)
-
-	return utils.Shuffle(numbers)
-}
-
-func shuffleQuestions(numQuestions int) ([]domain.Question, error) {
-
-	if numQuestions > len(shared.MainQuestions) {
-		numQuestions = len(shared.MainQuestions)
-	}
-
-	randomNumbers := getShuffledQuestionsNumbers()[:numQuestions]
-	results := QuestionsWorkerPoolInitiate(numQuestions, randomNumbers)
-
-	return ListenResults(numQuestions, results)
+func makeShuffledQuestions(numQuestions int) ([]domain.Question, error) {
+	return MakeQuestionsUsingWorkerPool(numQuestions)
 }
 
 func makeExtraQuestions(rounds uint, baseQuestions int, questionsContainer *QuestionsContainer) error {
 	necessaryQuestion := int(rounds)/2 - baseQuestions
 
-	additionalQuestions, err := shuffleQuestions(
+	additionalQuestions, err := makeShuffledQuestions(
 		necessaryQuestion,
 	)
 

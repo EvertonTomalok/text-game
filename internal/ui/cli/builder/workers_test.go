@@ -53,3 +53,32 @@ func TestQuestionsWorkerPoolInitiate(t *testing.T) {
 		)
 	}
 }
+
+func TestMakeQuestionsUsingWorkerPool_MAX_QUESTIONS_OK(t *testing.T) {
+	lenQuestions := 8
+	questions, err := MakeQuestionsUsingWorkerPool(lenQuestions)
+
+	if err != nil {
+		t.Errorf("some error ocurred %+v", err)
+	}
+
+	if lenQuestions != len(questions) {
+		t.Errorf("it was expected %d but received %d", lenQuestions, len(questions))
+	}
+}
+
+func TestMakeQuestionsUsingWorkerPool_MAX_QUESTIONS_EIGHT(t *testing.T) {
+	expectedQuestions := 8
+
+	lenQuestions := 10
+	questions, err := MakeQuestionsUsingWorkerPool(lenQuestions)
+
+	if err != nil {
+		t.Errorf("some error ocurred %+v", err)
+	}
+
+	/* Even we pass more than 8 as lenght of question, we'll only produce 8 questions */
+	if expectedQuestions != len(questions) {
+		t.Errorf("it was expected %d but received %d", lenQuestions, len(questions))
+	}
+}

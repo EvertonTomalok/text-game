@@ -4,6 +4,7 @@ import (
 	"github.com/evertotomalok/text-game/internal/application/shared"
 	"github.com/evertotomalok/text-game/internal/core/domain"
 	"github.com/evertotomalok/text-game/internal/core/errs"
+	"github.com/evertotomalok/text-game/pkg/utils"
 )
 
 func CreateChannels(numTask int) (chan uint, chan domain.Question) {
@@ -62,4 +63,20 @@ func ListenResults(numQuestions int, results <-chan domain.Question) ([]domain.Q
 	}
 
 	return questionsContainer.Questions, nil
+}
+
+func MakeQuestionsUsingWorkerPool(numQuestions int) ([]domain.Question, error) {
+	lenMainQuestions := len(shared.MainQuestions)
+	if numQuestions > lenMainQuestions {
+		numQuestions = lenMainQuestions
+	}
+
+	numbers := utils.URange(
+		1,
+		uint(lenMainQuestions),
+	)[:numQuestions]
+
+	results := QuestionsWorkerPoolInitiate(numQuestions, utils.Shuffle(numbers))
+
+	return ListenResults(numQuestions, results)
 }
