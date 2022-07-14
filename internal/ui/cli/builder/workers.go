@@ -3,6 +3,7 @@ package builder
 import (
 	"github.com/evertotomalok/text-game/internal/application/shared"
 	"github.com/evertotomalok/text-game/internal/core/domain"
+	"github.com/evertotomalok/text-game/internal/core/errs"
 )
 
 func CreateChannels(numTask int) (chan uint, chan domain.Question) {
@@ -43,4 +44,22 @@ func QuestionsWorkerPoolInitiate(numTasks int, randomNumbers []uint) <-chan doma
 	CreateWorkers(tasks, results, workersNum)
 	PopulateTasks(tasks, randomNumbers)
 	return results
+}
+
+func ListenResults(numQuestions int, results <-chan domain.Question) ([]domain.Question, error) {
+
+	questionsContainer := &QuestionsContainer{}
+
+	// Listen to the results channel to populate the questions' slice.
+	for m := 0; m < numQuestions; m++ {
+		question := <-results
+
+		if question.ID == 0 {
+			return []domain.Question{}, &errs.InvalidQuestion{}
+		}
+
+		questionsContainer.AddQuestion(question)
+	}
+
+	return questionsContainer.Questions, nil
 }

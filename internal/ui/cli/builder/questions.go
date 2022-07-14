@@ -79,23 +79,9 @@ func shuffleQuestions(numQuestions int) ([]domain.Question, error) {
 	}
 
 	randomNumbers := getShuffledQuestionsNumbers()[:numQuestions]
-
 	results := QuestionsWorkerPoolInitiate(numQuestions, randomNumbers)
 
-	questionsContainer := &QuestionsContainer{}
-
-	// Listen to the results channel to populate the questions' slice.
-	for m := 0; m < numQuestions; m++ {
-		question := <-results
-
-		if question.ID == 0 {
-			return []domain.Question{}, &errs.InvalidQuestion{}
-		}
-
-		questionsContainer.AddQuestion(question)
-	}
-
-	return questionsContainer.Questions, nil
+	return ListenResults(numQuestions, results)
 }
 
 func makeExtraQuestions(rounds uint, baseQuestions int, questionsContainer *QuestionsContainer) error {

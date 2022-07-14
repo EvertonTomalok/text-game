@@ -36,12 +36,16 @@ func TestQuestionsWorkerPoolInitiate(t *testing.T) {
 	questionsContainer := &QuestionsContainer{}
 	results := QuestionsWorkerPoolInitiate(len(testCase.RandomNumber), testCase.RandomNumber)
 
-	for n := 0; n < len(testCase.RandomNumber); n++ {
-		question := <-results
-		questionsContainer.AddQuestion(question)
+	questions, err := ListenResults(len(testCase.RandomNumber), results)
+
+	if err != nil {
+		t.Errorf(
+			"some error ocurred %+v",
+			err,
+		)
 	}
 
-	if len(questionsContainer.Questions) != testCase.ExpectQuestionsNumber {
+	if len(questions) != testCase.ExpectQuestionsNumber {
 		t.Errorf(
 			"the expected number of questions were %d and received %d",
 			len(questionsContainer.Questions),
